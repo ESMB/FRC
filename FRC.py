@@ -21,7 +21,7 @@ Pixel_size=103.0
 image_width=512
 image_height=512
 scale=8
-
+photon_adu = 0.0265/0.96
 # Thresholds
 prec_thresh=25
 
@@ -55,6 +55,9 @@ pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/
 
 resolution=[]
 clus_resolution=[]
+mean_precision=[]
+mean_signal=[]
+mean_SBR=[]
 #  Generate SR image (points)
 def generate_SR(coords):
     SR_plot_def=np.zeros((image_width*scale,image_height*scale),dtype=float)
@@ -170,9 +173,18 @@ for path in pathList:
                                     precsy= np.array(loc_data['Precision (nm)'])
                                     xcoords=np.array(loc_data['X'])
                                     ycoords=np.array(loc_data['Y'])
+                                    signal=np.array(loc_data['Signal'])
+                                    background=np.array(loc_data['Background'])
                                     
                                     
                                     precs_nm=precsx
+                                    
+                                    signal_above_background=(signal-background)*photon_adu
+                                    ave_signal= signal_above_background.mean()
+                                    signal_bg_ratio=signal/background
+                                    ave_sbr=signal_bg_ratio.mean()
+                                    
+                                    average_precision=precs_nm.mean()
                                     
                                     plt.hist(precs_nm, bins = 50,range=[0,100], rwidth=0.9,color='#ff0000')
                                     plt.xlabel('Precision (nm)',size=20)
@@ -180,7 +192,7 @@ for path in pathList:
                                     plt.title('Localisation precision',size=20)
                                     plt.savefig(path+"Precision.pdf")
                                     plt.show()
-                                        
+                                    
                                     # Generate points SR (ESMB method):
                                     img=generate_SR(coords)
                                     
@@ -264,11 +276,14 @@ for path in pathList:
                                             
                                             print(clu_frc_res)
                                  
+                                    
                                     resolution.append(frc_res)   
                                     clus_resolution.append(clu_frc_res)
+                                    mean_precision.append(average_precision)
+                                    mean_signal.append(ave_signal)
+                                    mean_SBR.append(ave_sbr)
                                     
-
-                                    df = pd.DataFrame(list(zip(resolution,clus_resolution)),columns =['Resolution', 'Custered Resolution'])
+                                    df = pd.DataFrame(list(zip(resolution,clus_resolution,mean_precision,mean_signal,mean_SBR)),columns =['Resolution', 'Custered Resolution','Precision','Signal','SBR'])
                                     df.to_csv(root_path+ 'Resolution.csv', sep = '\t')
                                         
                                     
