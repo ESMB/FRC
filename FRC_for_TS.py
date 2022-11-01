@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import frc
 from sklearn.cluster import DBSCAN
-
+import random
 # Camera settings
 Pixel_size=107.0
     
@@ -23,7 +23,7 @@ image_height=512
 scale=8
 
 # Thresholds
-prec_thresh=20
+prec_thresh=15
 
 filename_contains="fits.csv"
 
@@ -91,7 +91,8 @@ def resolution_per_frame(frames,total):
         framerem=i*frames
         print(framerem)
         loc_data = pd.read_csv(fits_path)
-
+        index_names = loc_data[loc_data['uncertainty_xy [nm]']>prec_thresh].index
+        loc_data.drop(index_names, inplace = True)
         index_names = loc_data[loc_data['frame']>framerem].index
         loc_data.drop(index_names, inplace = True)
        
@@ -99,9 +100,7 @@ def resolution_per_frame(frames,total):
 
         # Extract useful data:
         coords = np.array(list(zip(data_df['x [nm]']/Pixel_size,data_df['y [nm]']/Pixel_size)))
-        precs= np.array(data_df['uncertainty_xy [nm]'])
-        xcoords=np.array(data_df['x [nm]']/Pixel_size)
-        ycoords=np.array(data_df['y [nm]']/Pixel_size)
+
     
             
         # Generate points SR (ESMB method):
@@ -116,6 +115,8 @@ def resolution_per_frame(frames,total):
         img_size = img.shape[0]
         xs_pix = np.arange(len(frc_curve)) / img_size
         
+    
+        
         xs_nm_freq = xs_pix * scale_frc
         frc_res, res_y, thres = frc.frc_res(xs_nm_freq, frc_curve, img_size)
         
@@ -126,7 +127,54 @@ def resolution_per_frame(frames,total):
     plt.ylabel('Resolution (nm)',size=20)
     plt.show()
     return res,frame_range
+
+def resolution(frame1,frame2):
+  
+    loc_data = pd.read_csv(fits_path)
+    index_names = loc_data[loc_data['uncertainty_xy [nm]']>prec_thresh].index
+    loc_data.drop(index_names, inplace = True)
+    index_names = loc_data[loc_data['frame']>frame2].index
+    loc_data.drop(index_names, inplace = True)
+    index_names = loc_data[loc_data['frame']<frame1].index
+    loc_data.drop(index_names, inplace = True)
+       
+       
+    data_df=loc_data           
+
+    # Extract useful data:
+    coords = np.array(list(zip(data_df['x [nm]']/Pixel_size,data_df['y [nm]']/Pixel_size)))
+    precs= np.array(data_df['uncertainty_xy [nm]'])
+
+    precs_ave=precs.mean()
+    length=len(precs)
+        
+    # Generate points SR (ESMB method):
+    img=generate_SR(coords)
     
+   
+    img = frc.util.square_image(img, add_padding=False)
+    img = frc.util.apply_tukey(img)
+    # Apply 1FRC technique
+   
+    frc_curve = frc.one_frc(img)
+    
+    img_size = img.shape[0]
+    xs_pix = np.arange(len(frc_curve)) / img_size
+    
+    xs_nm_freq = xs_pix * scale_frc
+    frc_res, res_y, thres = frc.frc_res(xs_nm_freq, frc_curve, img_size)
+    
+    text='Resolution = '+str(round(frc_res,2))+' nm'
+    plt.plot(xs_nm_freq, thres(xs_nm_freq))
+    plt.plot(xs_nm_freq, frc_curve)
+    plt.xlabel('Spatial resolution (nm$^{-1}$)',size=20)
+    plt.ylabel('FRC',size=20)
+    
+    plt.title(text,size=12)
+
+    return frc_res,precs_ave,length
+  
+
 def cumul_locs(frames,total):
     locs=[]
     frame_range=[]
@@ -278,20 +326,69 @@ for path in pathList:
                                             print(clu_frc_res)
                                  
                                     
-                                    res,framera=resolution_per_frame(10,2000)
-                              
+                                    # res,framera=resolution_per_frame(10,2000)
                                     
+                                    total_frames=max(loc_data['frame'])
+                                    
+                                    length=[]
+                                    resolution_mean=[]
+                                    resolution_sd=[]
+                                    precision_mean=[]
+                                    precision_sd=[]
+                                    locs_mean=[]
+                                    locs_sd=[]
+                                    for l in range(50,1000,50):
+                                        
+                                        resolution_ave=[]
+                                        precision_ave=[]
+                                        locs_ave=[]
+                                        
+                                        
+                                        for i in range(0,3):
+                                            j=random.randint(1,total_frames-l)
+                                    
+                                            res,prec,locs=resolution(j,j+l)
+                                        
+                                            resolution_ave.append(res)
+                                            precision_ave.append(prec)
+                                            locs_ave.append(locs)
+                                        plt.show()
+                                        resolution_ave=np.array(resolution_ave)
+                                        precision_ave=np.array(precision_ave)
+                                        locs_ave=np.array(locs_ave)
+                                        
+                                        length.append(l)
+                                        
+                                        mean_res=resolution_ave.mean()
+                                        sd_res=resolution_ave.std()
+                                        
+                                        resolution_mean.append(mean_res)
+                                        resolution_sd.append(sd_res)
+                                        
+                                        mean_prec=precision_ave.mean()
+                                        sd_prec=precision_ave.std()
+                                       
+                                        precision_mean.append(mean_prec)
+                                        precision_sd.append(sd_prec)
+                                        
+                                        mean_loc=locs_ave.mean()
+                                        sd_loc=locs_ave.std()
+                                       
+                                        locs_mean.append(mean_loc)
+                                        locs_sd.append(sd_loc)
+                                        plt.plot(length,resolution_mean)
+                                        plt.show()
                          
-                                    df = pd.DataFrame(list(zip(framera, res)),columns =['Frame', 'Resolution'])
+                                    df = pd.DataFrame(list(zip(length,resolution_mean,resolution_sd,locs_mean,locs_sd,precision_mean,precision_sd)),columns =['length','resolution_mean','resolution_sd','locs_mean','locs_sd','precision_mean','precision_sd'])
                                     
                                     
-                                    df.to_csv(path+ 'Resolution.csv', sep = '\t')
+                                    df.to_csv(path+ 'Resolution_rand.csv', sep = '\t')
                                 
-                                    locs,framera2=cumul_locs(10,2000)
+                                    # locs,framera2=cumul_locs(10,2000)
                                     
-                                    df1 = pd.DataFrame(locs,columns =['locs'])
+                                    # df1 = pd.DataFrame(locs,columns =['locs'])
                                     
                                     
-                                    df1.to_csv(path+ 'locs.csv', sep = '\t')
+                                    # df1.to_csv(path+ 'locs.csv', sep = '\t')
                                     
                                     
