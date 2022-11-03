@@ -23,7 +23,7 @@ image_height=512
 scale=8
 
 # Thresholds
-prec_thresh=15
+prec_thresh=20
 
 filename_contains="fits.csv"
 
@@ -337,14 +337,14 @@ for path in pathList:
                                     precision_sd=[]
                                     locs_mean=[]
                                     locs_sd=[]
-                                    for l in range(50,1000,50):
+                                    for l in range(50,500,10):
                                         
                                         resolution_ave=[]
                                         precision_ave=[]
                                         locs_ave=[]
                                         
                                         
-                                        for i in range(0,3):
+                                        for i in range(0,10):
                                             j=random.randint(1,total_frames-l)
                                     
                                             res,prec,locs=resolution(j,j+l)

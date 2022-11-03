@@ -28,7 +28,7 @@ prec_thresh=25
 filename_contains="FitResults.txt"
 
 # Folders to analyse:
-root_path=r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/"
+root_path=r"path_to_root"
 
 # Cluterinng
 
@@ -42,16 +42,7 @@ pathList=[]
 
 
 
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/15/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/20/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/25/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/30/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/35/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/40/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/45/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/50/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/55/")
-pathList.append(r"/Users/Mathew/Documents/Current analysis/Peptide_16_PAINT/All/60/")
+pathList.append(r"path_to_file")
 
 resolution=[]
 clus_resolution=[]
