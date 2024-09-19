@@ -14,27 +14,27 @@ import frc
 from sklearn.cluster import DBSCAN
 import random
 # Camera settings
-Pixel_size=107.0
+Pixel_size=103
     
 
 # Settings
 image_width=512
 image_height=512
-scale=8
+scale=10
 
 # Thresholds
-prec_thresh=20
+prec_thresh=100
 
-filename_contains="fits.csv"
+filename_contains="Full_Stack_PSD95_561_locs.csv"
 
 # Folders to analyse:
-root_path=r"/Users/Mathew/Documents/Current analysis/FRC_for_Haresh/"
+root_path=r"/Users/Mathew/Documents/Current analysis/FRC/"
 
 # Cluterinng
 
-to_cluster=1
-eps_threshold=1
-minimum_locs_threshold=100
+to_cluster=0
+eps_threshold=20
+minimum_locs_threshold=1
 
 
 pathList=[]
@@ -42,7 +42,7 @@ pathList=[]
 
 
 
-pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC_for_Haresh/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC/")
 
 
 #  Generate SR image (points)
@@ -328,61 +328,61 @@ for path in pathList:
                                     
                                     # res,framera=resolution_per_frame(10,2000)
                                     
-                                    total_frames=max(loc_data['frame'])
+                                    # total_frames=max(loc_data['frame'])
                                     
-                                    length=[]
-                                    resolution_mean=[]
-                                    resolution_sd=[]
-                                    precision_mean=[]
-                                    precision_sd=[]
-                                    locs_mean=[]
-                                    locs_sd=[]
-                                    for l in range(50,500,10):
+                                    # length=[]
+                                    # resolution_mean=[]
+                                    # resolution_sd=[]
+                                    # precision_mean=[]
+                                    # precision_sd=[]
+                                    # locs_mean=[]
+                                    # locs_sd=[]
+                                    # for l in range(50,500,10):
                                         
-                                        resolution_ave=[]
-                                        precision_ave=[]
-                                        locs_ave=[]
+                                    #     resolution_ave=[]
+                                    #     precision_ave=[]
+                                    #     locs_ave=[]
                                         
                                         
-                                        for i in range(0,10):
-                                            j=random.randint(1,total_frames-l)
+                                    #     for i in range(0,10):
+                                    #         j=random.randint(1,total_frames-l)
                                     
-                                            res,prec,locs=resolution(j,j+l)
+                                    #         res,prec,locs=resolution(j,j+l)
                                         
-                                            resolution_ave.append(res)
-                                            precision_ave.append(prec)
-                                            locs_ave.append(locs)
-                                        plt.show()
-                                        resolution_ave=np.array(resolution_ave)
-                                        precision_ave=np.array(precision_ave)
-                                        locs_ave=np.array(locs_ave)
+                                    #         resolution_ave.append(res)
+                                    #         precision_ave.append(prec)
+                                    #         locs_ave.append(locs)
+                                    #     plt.show()
+                                    #     resolution_ave=np.array(resolution_ave)
+                                    #     precision_ave=np.array(precision_ave)
+                                    #     locs_ave=np.array(locs_ave)
                                         
-                                        length.append(l)
+                                    #     length.append(l)
                                         
-                                        mean_res=resolution_ave.mean()
-                                        sd_res=resolution_ave.std()
+                                    #     mean_res=resolution_ave.mean()
+                                    #     sd_res=resolution_ave.std()
                                         
-                                        resolution_mean.append(mean_res)
-                                        resolution_sd.append(sd_res)
+                                    #     resolution_mean.append(mean_res)
+                                    #     resolution_sd.append(sd_res)
                                         
-                                        mean_prec=precision_ave.mean()
-                                        sd_prec=precision_ave.std()
+                                    #     mean_prec=precision_ave.mean()
+                                    #     sd_prec=precision_ave.std()
                                        
-                                        precision_mean.append(mean_prec)
-                                        precision_sd.append(sd_prec)
+                                    #     precision_mean.append(mean_prec)
+                                    #     precision_sd.append(sd_prec)
                                         
-                                        mean_loc=locs_ave.mean()
-                                        sd_loc=locs_ave.std()
+                                    #     mean_loc=locs_ave.mean()
+                                    #     sd_loc=locs_ave.std()
                                        
-                                        locs_mean.append(mean_loc)
-                                        locs_sd.append(sd_loc)
-                                        plt.plot(length,resolution_mean)
-                                        plt.show()
+                                    #     locs_mean.append(mean_loc)
+                                    #     locs_sd.append(sd_loc)
+                                    #     plt.plot(length,resolution_mean)
+                                    #     plt.show()
                          
-                                    df = pd.DataFrame(list(zip(length,resolution_mean,resolution_sd,locs_mean,locs_sd,precision_mean,precision_sd)),columns =['length','resolution_mean','resolution_sd','locs_mean','locs_sd','precision_mean','precision_sd'])
+                                    # df = pd.DataFrame(list(zip(length,resolution_mean,resolution_sd,locs_mean,locs_sd,precision_mean,precision_sd)),columns =['length','resolution_mean','resolution_sd','locs_mean','locs_sd','precision_mean','precision_sd'])
                                     
                                     
-                                    df.to_csv(path+ 'Resolution_rand.csv', sep = '\t')
+                                    # df.to_csv(path+ 'Resolution_rand.csv', sep = '\t')
                                 
                                     # locs,framera2=cumul_locs(10,2000)
                                     

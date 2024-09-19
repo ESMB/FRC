@@ -20,29 +20,40 @@ Pixel_size=103.0
 # Settings
 image_width=512
 image_height=512
-scale=8
+scale=12
 photon_adu = 0.0265/0.96
 # Thresholds
-prec_thresh=25
+prec_thresh=250
 
 filename_contains="FitResults.txt"
 
 # Folders to analyse:
-root_path=r"path_to_root"
+root_path=r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/"
 
 # Cluterinng
 
-to_cluster=1
+to_cluster=0
 eps_threshold=1
-minimum_locs_threshold=100
+minimum_locs_threshold=5
 
 
 pathList=[]
 
 
 
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/1/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/2/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/3/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/4/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/5/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/6/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/7/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/8/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/9/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/10/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/11/")
+pathList.append(r"/Users/Mathew/Documents/Current analysis/FRC for Noelia/12/")
 
-pathList.append(r"path_to_file")
 
 resolution=[]
 clus_resolution=[]
@@ -128,7 +139,8 @@ def resolution_per_frame(frames,total):
     plt.show()
     return res,frame_range
     
-
+paths_analysed=[]
+frc_resolution=[]
 for path in pathList:
     print(path)
     path=path+"/"
@@ -269,14 +281,19 @@ for path in pathList:
                                  
                                     
                                     resolution.append(frc_res)   
-                                    clus_resolution.append(clu_frc_res)
+                                    # clus_resolution.append(clu_frc_res)
                                     mean_precision.append(average_precision)
                                     mean_signal.append(ave_signal)
                                     mean_SBR.append(ave_sbr)
                                     
-                                    df = pd.DataFrame(list(zip(resolution,clus_resolution,mean_precision,mean_signal,mean_SBR)),columns =['Resolution', 'Custered Resolution','Precision','Signal','SBR'])
-                                    df.to_csv(root_path+ 'Resolution.csv', sep = '\t')
-                                        
+                                    # df = pd.DataFrame(list(zip(resolution,clus_resolution,mean_precision,mean_signal,mean_SBR)),columns =['Resolution', 'Custered Resolution','Precision','Signal','SBR'])
+                                    # df.to_csv(root_path+ 'Resolution.csv', sep = '\t')
                                     
+    paths_analysed.append(path+resultsname)
+    frc_resolution.append(frc_res)
+    
+    df = pd.DataFrame(zip(paths_analysed,frc_resolution),columns =['File', 'FRC'])
+    
+    df.to_csv(root_path+ 'Resolution.csv', sep = '\t')
                                     
-                                    
+UCB7853
